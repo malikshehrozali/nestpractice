@@ -3,13 +3,8 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
+import { Product } from './interfaces/products.interface';
 
-interface Product {
-  id: number | Date;
-  name: string | undefined;
-  price: number | undefined;
-  description: string | undefined;
-}
 
 @Injectable()
 export class ProductsService {

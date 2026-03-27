@@ -9,13 +9,8 @@ import {
   Put,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-
-interface Product {
-  id: number | Date;
-  name: string | undefined;
-  price: number | undefined;
-  description: string | undefined;
-}
+import { Product } from './interfaces/products.interface';
+import { ProductDto } from './dto/products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -29,21 +24,19 @@ export class ProductsController {
     return this.productService.getProductById(Number(id));
   }
   @Post()
-  addProduct(
-    @Body() body: { name: string; price: number; description: string },
-  ): Product | void {
+  addProduct(@Body() body: ProductDto): Product | void {
     return this.productService.addProduct(body);
   }
   @Put(':id')
   updateProduct(
-    @Body() body: { name: string; price: number; description: string },
+    @Body() body: ProductDto,
     @Param('id') id: string,
   ): Product | string | any {
     return this.productService.updateProduct(Number(id), body);
   }
   @Patch(':id')
   updateProductPartially(
-    @Body() body: Partial<{ name: string; price: number; description: string }>,
+    @Body() body: Partial<ProductDto>,
     @Param('id') id: string,
   ): Product | string | any {
     return this.productService.updateProductPartially(Number(id), body);
