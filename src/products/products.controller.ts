@@ -7,19 +7,26 @@ import {
   Patch,
   Post,
   Put,
+  UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './interfaces/products.interface';
 import { ProductDto } from './dto/products.dto';
+import { UppercasePipe } from 'src/common/pipes/uppercase/uppercase.pipe';
+import { AuthGuard } from 'src/guards/auth/auth.guard';
+import { HttpExceptionFilter } from 'src/filters/http-exception/http-exception.filter';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productService: ProductsService) {}
   @Get()
+  @UseGuards(AuthGuard)
   getProducts(): Product[] {
     return this.productService.getProducts();
   }
   @Get(':id')
+  @UseFilters(HttpExceptionFilter)
   getProductById(@Param('id') id: string): Product | undefined {
     return this.productService.getProductById(Number(id));
   }
@@ -45,4 +52,10 @@ export class ProductsController {
   deleteProduct(@Param('id') id: string): Product | string | any {
     return this.productService.deleteProduct(Number(id));
   }
+  @Post('name')
+  // custom pipe calling functionality
+  updateProductName(@Body('name', new UppercasePipe()) name: string) {
+    return { message: `Product name updated to ${name}` };
+  }
+  
 }
